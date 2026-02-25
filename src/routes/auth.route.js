@@ -26,7 +26,8 @@ authRouter.post("/register",async(req,res)=>{
         },
         process.env.JWT_SECRET
     )
-    
+
+    res.cookie("JWT_TOKEN", token)
 
     res.status(201).json({
         message : 'user create successfully',
