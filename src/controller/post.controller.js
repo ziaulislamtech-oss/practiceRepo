@@ -1,5 +1,21 @@
+const postModel = require("../Models/post.model")
+const ImageKit = require("@imagekit/nodejs")
 
-async function postControllerCreation(req,res){
+const {toFile} = require("@imagekit/nodejs")
+const jwt= require("jsonwebtoken")
 
-    const{caption,imagUrl,user}  = req.boyd
+const imageKit = new ImageKit({
+    privateKey : process.env.IMAGEKIT_PRIVATE_KEY
+})
+
+async function postCreatetorController(req,res) {
+    
+    console.log(req.body,req.file)
+    const file = await imageKit.files.upload({
+        file : await toFile(Buffer.from(req.file.buffer),'file'),
+        fileName : "test" 
+    })
+    res.send(file)
 }
+
+module.exports = {postCreatetorController}
