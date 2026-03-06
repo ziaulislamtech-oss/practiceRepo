@@ -52,5 +52,41 @@ async function createPostController(req, res) {
 
 }
 
+async function getPostController(req,res){
 
-module.exports = { createPostController }
+    const token = req.cookies.token 
+
+    if(!token){
+        res.status(401).json({
+            message : "invalid token or unauthorised user"
+        })
+    }
+
+    let decoded
+
+    try{
+        decoded = await jwt.verify(token,process.env.JWT_SECRET)
+        console.log(decoded)
+    }catch(error){
+        res.status(401).json({
+            message : 'invalid token'
+        })
+    }
+
+    const userId = decoded.id
+
+    const posts =  await postModel.find({
+        user : userId
+    })
+
+    res.status(200).json({
+        message : "posts fetched successfully",
+        posts
+    })
+
+
+
+}
+
+
+module.exports = { createPostController,getPostController }
