@@ -2,6 +2,7 @@ const express = require("express")
 const postController = require('../controllers/post.controller')
 
 const multer = require('multer')
+const { post } = require("../app")
 const upload  = multer({storage:multer.memoryStorage()})
 
 const postRouter = express.Router()
@@ -9,6 +10,8 @@ const postRouter = express.Router()
 
 postRouter.post('/',upload.single('image'),postController.createPostController)
 postRouter.get('/',postController.getPostController)
+
+postRouter.get("/details/:postId",postController.getPostDetailsController)
 
 
 

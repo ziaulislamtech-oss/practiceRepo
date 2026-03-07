@@ -88,5 +88,56 @@ async function getPostController(req,res){
 
 }
 
+async function getPostDetailsController(req,res){
 
-module.exports = { createPostController,getPostController }
+    const token = req.cookies.token
+
+    if(!token){
+        res.status(401).json({
+            message : "token no found un authorised access"
+        })
+    }
+
+    let decoded
+
+    try{
+        decoded = await jwt.verify(token,process.env.JWT_SECRET)
+    }
+    catch(error){
+        res.status(401).json({
+            message : "invalid token "
+        })
+    }
+
+    const postId = req.params.postId
+    const userId = decoded.id
+    
+    const post = await postModel.findById(postId)
+
+    if(!post){
+        res.status(404).json({
+            message : "post not found"
+        })
+    }
+
+    console.log(post,userId)
+    const isValidUser = post.user.toString() === userId
+
+
+    if(!isValidUser){
+        return res.status(403).json({
+            message : "Forbidden access"
+        })
+    }
+
+    res.status(200).json({
+        message : 'post fetched successfully',
+        post
+    })
+    
+
+   
+
+}
+
+module.exports = { createPostController,getPostController , getPostDetailsController }
